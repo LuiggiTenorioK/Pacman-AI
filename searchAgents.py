@@ -280,7 +280,7 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
-        self.corners = ((1,1), (1,top), (right, 1), (right, top))
+        self.corners = [(1,1), (1,top), (right, 1), (right, top)]
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print 'Warning: no food in corner ' + str(corner)
@@ -288,6 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+	self.visited = []
 
     def getStartState(self):
         """
@@ -295,6 +296,9 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+	return (self.startingPosition, self.corners)
+	#starting position creo que es una tupla  ej: (1,4)
+	#corners es una lista de tuplas, se eliminaran cuando ya hallan sido visitadas
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -302,6 +306,9 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+	isGoal = (state[2] == [])
+	#Falta imprimir el progreso
+	return isGoal
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
