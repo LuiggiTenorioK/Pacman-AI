@@ -269,7 +269,6 @@ def euclideanHeuristic(position, problem, info={}):
 class CornersProblem(search.SearchProblem):
     """
     This search problem finds paths through all four corners of a layout.
-
     You must select a suitable state space and successor function
     """
 
@@ -288,7 +287,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-	self.visited = []
+		self.visited = []
 
     def getStartState(self):
         """
@@ -296,9 +295,9 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-	return (self.startingPosition, self.corners)
-	#starting position creo que es una tupla  ej: (1,4)
-	#corners es una lista de tuplas, se eliminaran cuando ya hallan sido visitadas
+		return (self.startingPosition, self.corners)
+		#starting position creo que es una tupla  ej: (1,4)
+		#corners es una lista de tuplas, se eliminaran cuando ya hallan sido visitadas
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -306,15 +305,14 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-	isGoal = (state[2] == [])
-	#Falta imprimir el progreso
-	return isGoal
+		isGoal = (state[1] == [])
+		#Falta imprimir el progreso
+		return isGoal
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
         Returns successor states, the actions they require, and a cost of 1.
-
          As noted in search.py:
             For a given state, this should return a list of triples, (successor,
             action, stepCost), where 'successor' is a successor to the current
@@ -330,8 +328,17 @@ class CornersProblem(search.SearchProblem):
             #   dx, dy = Actions.directionToVector(action)
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
-
-            "*** YOUR CODE HERE ***"
+			"*** YOUR CODE HERE ***"
+			x,y = currenPosition
+			dx,dy = Actions.directionToVector(action)
+			nextx,nexty = int(x+dx), int(y+dy)
+			hitsWall = self.walls[nextx][nexty]
+			stepCost = costFn(action)
+			if(hitsWall):
+				successor = currenPosition
+			else:
+				successor = nextx,nexty
+			successors.append((successor,action,stepCost))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
