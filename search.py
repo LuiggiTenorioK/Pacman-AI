@@ -86,9 +86,10 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
+    "*** YOUR CODE HERE ***"
     node = problem.getStartState()
-    frontier = util.Stack()
     actions = []
+    frontier = util.Stack()
     frontier.push((node,actions))
     explored = []
     while 1:
@@ -102,14 +103,33 @@ def depthFirstSearch(problem):
             child, direction, cost = succ
             path = actions + [direction]
             if ((child not in explored) and ((child,direction) not in frontier.list)):
-                frontier.push((child,path))
-            
-    util.raiseNotDefined()
+                frontier.push((child,path))       
+    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    node = problem.getStartState()
+    actions = []
+    if problem.isGoalState(node):
+        return actions
+    frontier = util.Queue()
+    frontier.push((node,actions))
+    explored = []
+    while 1:
+        if frontier.isEmpty():
+            return []
+        node,actions = frontier.pop()
+        explored.append(node)
+
+        for succ in problem.getSuccessors(node):
+            child, direction, cost = succ
+            path = actions + [direction]
+            if ((child not in explored) and ((child,direction) not in frontier.list)):
+                if problem.isGoalState(child):
+                    return path
+                frontier.push((child,path))
+    #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -134,3 +154,5 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+ids = iDeepeningSearch
+bs = bidirectionalSearch
