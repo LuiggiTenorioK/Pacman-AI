@@ -554,3 +554,111 @@ def mazeDistance(point1, point2, gameState):
     assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
     prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
     return len(search.bfs(prob))
+
+
+class CornersGreedySearchAgent(SearchAgent):
+    "Search for all corners using a sequence of searches"
+    def registerInitialState(self, state):
+        self.actions = []
+        currentState = state
+        while(currentState.getFood().count() > 0):
+            nextPathSegment = self.findPathToClosestCorner(currentState) # The missing piece
+            self.actions += nextPathSegment
+            for action in nextPathSegment:
+                legal = currentState.getLegalActions()
+                if action not in legal:
+                    t = (str(action), str(currentState))
+                    raise Exception, 'findPathToClosestDot returned an illegal move: %s!\n%s' % t
+                currentState = currentState.generateSuccessor(0, action)
+        self.actionIndex = 0
+        print 'Path found with cost %d.' % len(self.actions)
+
+
+    def findPathToClosestCorner(self, gameState):
+        """
+        Returns a path (a list of actions) to the closest dot, starting from
+        gameState.
+        """
+        # Here are some useful elements of the startState
+        startPosition = gameState.getPacmanPosition()
+        food = gameState.getFood()
+        walls = gameState.getWalls()
+        problem = CornersProblem(gameState)
+
+        "*** YOUR CODE HERE ***"
+        #return search.greedySearch(problem)
+        return greedySearch(problem,greedyHeuristic) #Desplazar a search.py
+        util.raiseNotDefined()
+
+
+def greedyHeuristic(state, problem=None):
+    heuristic = 0
+    cornersLeft = state[1][:]
+    referencePoint = state[0]
+
+    while len(cornersLeft) > 0:
+        closestCorner = closestPoint(referencePoint, cornersLeft)
+        heuristic += euclidieanDistance(referencePoint, closestCorner)
+        referencePoint = closestCorner
+        cornersLeft.remove(closestCorner)
+
+    return heuristic
+
+
+def closestPoint(fromPoint, candidatesList):
+    if len(candidatesList) == 0:
+        return None
+
+    closestCorner = candidatesList[0]
+    closestCost = euclidieanDistance(fromPoint, closestCorner)
+    for candidate in candidatesList[1:]:
+        thisCost = euclidieanDistance(fromPoint, candidate)
+        if closestCost > thisCost:
+            closestCost = thisCost
+            closestCorner = candidate
+
+    return closestCorner
+
+
+def euclidieanDistance(pointA, pointB):
+    return abs(pointA[0] - pointB[0]) + abs(pointA[1] - pointB[1])
+
+
+def greedySearch(problem,heuristic=search.nullHeuristic):
+    """Busqueda para la parte 3 del trabajo"""
+    #cost = lambda aPath: problem.getCostOfActions([x[1] for x in aPath]) + heuristic(aPath[len(aPath) - 1][0], problem)
+    cost = lambda greedyPath: heuristic(greedyPath[len(greedyPath) - 1][0], problem)
+    frontier = util.PriorityQueueWithFunction(cost)
+
+    explored = []
+    frontier.push([(problem.getStartState(), "Stop", 0)])
+
+    while not frontier.isEmpty():
+        # print "frontier: ", frontier.heap
+        path = frontier.pop()
+        # print "path len: ", len(path)
+        # print "path: ", path
+
+        s = path[len(path) - 1]
+        s = s[0]
+        # print "s: ", s
+        if problem.isGoalState(s):
+            # print "FOUND SOLUTION: ", [x[1] for x in path]
+            return [x[1] for x in path][1:]
+
+        if s not in explored:
+            explored.append(s)
+            # print "EXPLORING: ", s
+
+            for successor in problem.getSuccessors(s):
+                # print "SUCCESSOR: ", successor
+                if successor[0] not in explored:
+                    successorPath = path[:]
+                    successorPath.append(successor)
+                    # print "successorPath: ", successorPath
+                    frontier.push(successorPath)
+            # else:
+            # print successor[0], " IS ALREADY EXPLORED!!"
+
+    return []
+    util.raiseNotDefined()
