@@ -86,33 +86,24 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    from game import Directions
-
     node = problem.getStartState()
-    '''print problem.getSuccessors(node)
-    node,path,cost = problem.getSuccessors(node)[0]
-    print problem.getSuccessors(node)
-    while not problem.isGoalState(node):
-        node,path,cost = problem.getSuccessors(node)[1]
-        print problem.getSuccessors(node)
-    '''
     frontier = util.Stack()
-    frontier.push((node,Directions.STOP,0))
+    actions = []
+    frontier.push((node,actions))
     explored = []
-
-    #c = 0
-    while (not frontier.isEmpty()):
-        print "frontier:" , frontier.list
-        print "explored:" , explored
-        node,path,cost = frontier.pop()
+    while 1:
+    	if frontier.isEmpty():
+    		return []
+        node,actions = frontier.pop()
         if problem.isGoalState(node):
-                return [x[1] for x in frontier.list]
-        explored.append((node,path,cost))
-        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            child = [x for x in problem.getSuccessors(node) if x[1] == action]
-            if (child != []) & ((child not in explored) | (child not in frontier.list)):
-                frontier.push(child)
-
+                return path
+        explored.append(node)
+        for succ in problem.getSuccessors(node):
+            child, direction, cost = succ
+            path = actions + [direction]
+            if ((child not in explored) and ((child,direction) not in frontier.list)):
+                frontier.push((child,path))
+            
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
