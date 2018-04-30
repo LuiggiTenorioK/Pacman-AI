@@ -102,7 +102,8 @@ def depthFirstSearch(problem):
         for succ in problem.getSuccessors(node):
             child, direction, cost = succ
             path = actions + [direction]
-            if ((child not in explored) and ((child,direction) not in frontier.list)):
+            nodeFrontier = [x for x,_ in frontier.list]
+            if ((child not in explored) and (child not in nodeFrontier)):
                 frontier.push((child,path))       
     #util.raiseNotDefined()
 
@@ -111,8 +112,10 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     node = problem.getStartState()
     actions = []
+
     if problem.isGoalState(node):
         return actions
+
     frontier = util.Queue()
     frontier.push((node,actions))
     explored = []
@@ -125,7 +128,8 @@ def breadthFirstSearch(problem):
         for succ in problem.getSuccessors(node):
             child, direction, cost = succ
             path = actions + [direction]
-            if ((child not in explored) and ((child,direction) not in frontier.list)):
+            nodeFrontier = [x for x,_ in frontier.list]
+            if ((child not in explored) and (child not in nodeFrontier)):
                 if problem.isGoalState(child):
                     return path
                 frontier.push((child,path))
@@ -148,14 +152,65 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def iDeepeningSearch(problem):
-    """Search the node of least total cost first."""
+def iDeepeningSearch(problem): 
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+def reversePath(lista):
+    return []
+
 def bidirectionalSearch(problem):
-    """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    nodeStart = problem.getStartState()
+    actionsStart = []
+    nodeGoal = problem.goal
+    actionsGoal = []
+
+    if nodeStart == nodeGoal:
+        return []
+
+    frontierStart = util.Queue()
+    frontierStart.push((nodeStart,actionsStart))
+    exploredStart = []
+    frontierGoal = util.Queue()
+    frontierGoal.push((nodeGoal,actionsGoal))
+    exploredGoal = []
+
+    while 1:
+        if frontierGoal.isEmpty() | frontierStart.isEmpty():
+            return []
+
+        node_S,actions_S = frontierStart.pop()
+        exploredStart.append(node_S)
+        node_G,actions_G = frontierGoal.pop()
+        exploredGoal.append(node_G)
+
+        for succ in problem.getSuccessors(node_S):
+            child,direction,cost = succ
+            path = actions_S + [direction]
+            nodeFrontier = [x for x,_ in frontierStart.list]
+            if (child not in exploredStart) and (child not in nodeFrontier):
+                if (child in frontierGoal.list):
+                    for node,actions in frontierGoal.list:
+                        if (child == node):
+                            route = reversePath(actions.reverse())
+                            return actions_S + route
+                frontierStart.push((child,path))
+
+        for succ in problem.getSuccessors(node_G):
+            child,direction,cost = succ
+            path = actions_G + [direction]
+            nodeFrontier = [x for x,_ in frontierGoal.list]
+            if (child not in exploredGoal) and (child not in nodeFrontier):
+                if (child in frontierStart.list):
+                    for node,actions in frontierStart.list:
+                        if (child == node):
+                            route = reversePath(actions.reverse())
+                            return actions_S + route
+                frontierStart.push((child,path))
+
+
+
     util.raiseNotDefined()
 
 # Abbreviations
