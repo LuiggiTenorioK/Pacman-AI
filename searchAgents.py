@@ -318,7 +318,7 @@ class CornersProblem(search.SearchProblem):
 			state, 'action' is the action required to get there, and 'stepCost'
 			is the incremental cost of expanding to that successor
 		"""
-
+		print state
 		successors = []
 		for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
 			# Add a successor state to the successor list if the action is legal
@@ -332,20 +332,13 @@ class CornersProblem(search.SearchProblem):
 			dx,dy = Actions.directionToVector(action)
 			nextx,nexty = int(x+dx), int(y+dy)
 			hitsWall = self.walls[nextx][nexty]
-			stepCost = self.getCostOfActions([action])
-			if(hitsWall):
-				successor = ((x,y),state[1])
-			else:
+			if not hitsWall :
 				if ((nextx,nexty) in state[1]):
 					state[1].remove((nextx,nexty))
-					# esta wa, no se porque se mueve solo hasta una esquina
-					# Espera deja leo todo p
-					# lo peor de todo es que en lo que se va imprimiendo si sale como que recorre todo
 				successor = ((nextx,nexty),state[1])
-			successors.append((successor,action,stepCost))
-			print successor
-			print action
-			print stepCost
+				successors.append((successor,action,1))
+		
+		print successors
 
 		self._expanded += 1 # DO NOT CHANGE
 		return successors
