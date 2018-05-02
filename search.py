@@ -93,8 +93,8 @@ def depthFirstSearch(problem):
     frontier.push((node,actions))
     explored = []
     while 1:
-    	if frontier.isEmpty():
-    		return []
+        if frontier.isEmpty():
+            return []
         node,actions = frontier.pop()
         if problem.isGoalState(node):
                 return path
@@ -159,61 +159,59 @@ def iDeepeningSearch(problem):
 def bidirectionalSearch(problem):
     "*** YOUR CODE HERE ***"
     from game import Directions
-    nodeStart = problem.getStartState()
-    actionsStart = []
-    nodeGoal = problem.goal
-    actionsGoal = []
 
-    if nodeStart == nodeGoal:
+    node_ini = problem.getStartState()
+    actions_ini = []
+
+    node_fin = problem.goal
+    actions_fin = []
+
+    if node_ini == node_fin:
         return []
 
-    #Inicializar las fronteras partiendo del inicio
-    frontierStart = util.Queue()
-    frontierStart.push((nodeStart,actionsStart))
-    exploredStart = []
-    #Inicializar las fronteras partiendo de la meta
-    frontierGoal = util.Queue()
-    frontierGoal.push((nodeGoal,actionsGoal))
-    exploredGoal = []
+    frontier_ini = util.Queue()
+    frontier_ini.push((node_ini,actions_ini))
+    explored_ini = []
+
+    frontier_fin = util.Queue()
+    frontier_fin.push((node_fin,actions_fin))
+    explored_fin = []
+
 
     while 1:
-        if frontierGoal.isEmpty() | frontierStart.isEmpty():
-            return []
+        if frontier_ini.isEmpty() | frontier_fin.isEmpty():
+            break
+        node_ini,actions_ini = frontier_ini.pop()
+        explored_ini.append(node_ini)
 
-        node_S,actions_S = frontierStart.pop()
-        exploredStart.append(node_S)
-        node_G,actions_G = frontierGoal.pop()
-        exploredGoal.append(node_G)
+        for succ in problem.getSuccessors(node_ini):
+            child, direction, cost = succ
+            path = actions_ini + [direction]
+            nodeFrontier = [x for x,_ in frontier_ini.list]
+            if ((child not in explored_ini) and (child not in nodeFrontier)):
+                goalList = [x for x,_ in frontier_fin.list]
+                if child in goalList:
+                    for node,action in frontier_fin.list:
+                        if (node == child):
+                            route = [Directions.REVERSE[x] for x in action]
+                            return path + route
+                frontier_ini.push((child,path))
 
-        #BFS para el inicio
-        for succ in problem.getSuccessors(node_S):
-            child,direction,cost = succ
-            path = actions_S + [direction]
-            nodeFrontier = [x for x,_ in frontierStart.list]
-            if (child not in exploredStart) and (child not in nodeFrontier):
-                if (child,Diretcions.REVERSE[direction]) in frontierGoal.list:
-                    print "Encontrado en start"
-                    for node,actions in frontierGoal.list:
-                        if (child == node):
-                            route = [Directions.REVERSE[x] for x in actions]
-                            return actions_S + route
-                frontierStart.push((child,path))
+        node_fin,actions_fin = frontier_fin.pop()
+        explored_fin.append(node_fin)
 
-        #BFS para el goal 
-        for succ in problem.getSuccessors(node_G):
-            child,direction,cost = succ
-            path = actions_G + [direction]
-            nodeFrontier = [x for x,_ in frontierGoal.list]
-            if (child not in exploredGoal) and (child not in nodeFrontier):
-                if (child,Directions.REVERSE[direction]) in frontierStart.list:
-                    print "Encontrado en goal"
-                    for node,actions in frontierStart.list:
-                        if (child == node):
+        for succ in problem.getSuccessors(node_fin):
+            child, direction, cost = succ
+            path = actions_fin + [direction]
+            nodeFrontier = [x for x,_ in frontier_fin.list]
+            if ((child not in explored_fin) and (child not in nodeFrontier)):
+                startList = [x for x,_ in frontier_ini.list]
+                if child in startList:
+                    for node,action in frontier_ini.list:
+                        if (node == child):
                             route = [Directions.REVERSE[x] for x in path]
-                            return actions + route
-                frontierGoal.push((child,path))
-
-
+                            return action + route
+                frontier_fin.push((child,path))
 
     util.raiseNotDefined()
 
