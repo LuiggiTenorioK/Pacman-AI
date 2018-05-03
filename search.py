@@ -194,6 +194,7 @@ def bidirectionalSearch(problem):
                     for node,action in frontier_fin.list:
                         if (node == child):
                             route = [Directions.REVERSE[x] for x in action]
+                            route.reverse()
                             return path + route
                 frontier_ini.push((child,path))
 
@@ -210,6 +211,7 @@ def bidirectionalSearch(problem):
                     for node,action in frontier_ini.list:
                         if (node == child):
                             route = [Directions.REVERSE[x] for x in path]
+                            route.reverse()
                             return action + route
                 frontier_fin.push((child,path))
 
