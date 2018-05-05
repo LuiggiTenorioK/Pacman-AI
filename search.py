@@ -99,6 +99,7 @@ def depthFirstSearch(problem):
         if problem.isGoalState(node):
                 return path
         explored.append(node)
+        print "sucesores:", problem.getSuccessors(node)
         for succ in problem.getSuccessors(node):
             child, direction, cost = succ
             path = actions + [direction]
@@ -165,7 +166,8 @@ def bidirectionalSearch(problem):
 
     node_fin = problem.goal
     actions_fin = []
-
+    #print "ini", node_ini
+    #print "fin", node_fin
     if node_ini == node_fin:
         return []
 
@@ -190,7 +192,7 @@ def bidirectionalSearch(problem):
             nodeFrontier = [x for x,_ in frontier_ini.list]
             if ((child not in explored_ini) and (child not in nodeFrontier)):
                 goalList = [x for x,_ in frontier_fin.list]
-                if child in goalList:
+                if (child in goalList) and (problem.isGoalState(child)):
                     for node,action in frontier_fin.list:
                         if (node == child):
                             route = [Directions.REVERSE[x] for x in action]
@@ -207,7 +209,7 @@ def bidirectionalSearch(problem):
             nodeFrontier = [x for x,_ in frontier_fin.list]
             if ((child not in explored_fin) and (child not in nodeFrontier)):
                 startList = [x for x,_ in frontier_ini.list]
-                if child in startList:
+                if (child in startList) and (problem.isGoalState(child)):
                     for node,action in frontier_ini.list:
                         if (node == child):
                             route = [Directions.REVERSE[x] for x in path]
