@@ -295,10 +295,12 @@ class CornersProblem(search.SearchProblem):
 		space)
 		"""
 		"*** YOUR CODE HERE ***"
-		return (self.startingPosition, self.corners)
+		corn = self.corners
+		corn.append(self.startingPosition)
+		return (self.startingPosition, corn)
 		#starting position creo que es una tupla  ej: (1,4)
 		#corners es una lista de tuplas, se eliminaran cuando ya hallan sido visitadas
-		util.raiseNotDefined()
+		#util.raiseNotDefined()
 
 	def isGoalState(self, state):
 		"""
@@ -338,7 +340,7 @@ class CornersProblem(search.SearchProblem):
 					corners.remove((nextx,nexty))
 				successors.append((((nextx,nexty),corners),action,1))
 		
-		#print successors
+		print successors
 
 		self._expanded += 1 # DO NOT CHANGE
 		return successors

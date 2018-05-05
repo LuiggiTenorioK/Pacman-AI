@@ -369,6 +369,16 @@ class PacmanRules:
             if numFood == 0 and not state.data._lose:
                 state.data.scoreChange += 500
                 state.data._win = True
+        #print "Antes: "
+        #print state.data._win
+        '''(startX,startY) = state.data.layout.agentPositions[0][1]
+        if state.data._win and ((x,y)!=(startX,startY)):
+            state.data.food[startX][startY] = True
+            state.data._win = False
+            state.data.layout.capsules.append((startX,startY))
+            print "Regresa pls"'''
+
+
         # Eat capsule
         if( position in state.getCapsules() ):
             state.data.capsules.remove( position )
