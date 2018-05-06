@@ -359,26 +359,7 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
-def cornersHeuristic(state, problem):
-    """
-    A heuristic for the CornersProblem that you defined.
 
-      state:   The current search state
-               (a data structure you chose in your search problem)
-
-      problem: The CornersProblem instance for this layout.
-
-    This function should always return a number that is a lower bound on the
-    shortest path from the state to a goal of the problem; i.e.  it should be
-    admissible (as well as consistent).
-    """
-    corners = problem.corners # These are the corner coordinates
-    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
-    "*** YOUR CODE HERE ***"
-
-
-    return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -584,20 +565,36 @@ class CornersGreedySearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = CornersProblem(gameState)
         #return greedySearch(problem, euclideanHeuristic)
-        #return search.greedySearch(problem)
-        return greedySearch(problem,greedyHeuristic) #Desplazar a search.py
+        return search.aStarSearch(problem,cornersHeuristic)
+        return greedySearch(problem,cornersHeuristic) #Desplazar a search.py
+
 
     #util.raiseNotDefined()
 
+def cornersHeuristic(state, problem=CornersProblem):
+    """
+    A heuristic for the CornersProblem that you defined.
 
-def greedyHeuristic(state, problem=None):
+      state:   The current search state
+               (a data structure you chose in your search problem)
+
+      problem: The CornersProblem instance for this layout.
+
+    This function should always return a number that is a lower bound on the
+    shortest path from the state to a goal of the problem; i.e.  it should be
+    admissible (as well as consistent).
+    """
+    corners = problem.corners # These are the corner coordinates
+    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+
+    "*** YOUR CODE HERE ***"
     heuristic = 0
     cornersLeft = state[1][:]
     referencePoint = state[0]
-    distanceFunction= mixedDistance
+    distanceFunction = mixedDistance
 
     while len(cornersLeft) > 0:
-        closestCorner = closestPoint(referencePoint, cornersLeft,distanceFunction)
+        closestCorner = closestPoint(referencePoint, cornersLeft, distanceFunction)
         heuristic += distanceFunction(referencePoint, closestCorner)
         referencePoint = closestCorner
         cornersLeft.remove(closestCorner)
@@ -660,3 +657,5 @@ def greedySearch(problem,heuristic=search.nullHeuristic):
 
     return []
     util.raiseNotDefined()
+
+#-l tinyCorners -p CornersGreedySearchAgent -a prob=CornersProblem
