@@ -101,7 +101,7 @@ def depthFirstSearch(problem):
         explored.append(node)
         print "sucesores:", problem.getSuccessors(node)
         for succ in problem.getSuccessors(node):
-            child, direction, cost = succ
+            child, direction, _ = succ
             path = actions + [direction]
             nodeFrontier = [x for x,_ in frontier.list]
             if ((child not in explored) and (child not in nodeFrontier)):
@@ -127,7 +127,7 @@ def breadthFirstSearch(problem):
         explored.append(node)
 
         for succ in problem.getSuccessors(node):
-            child, direction, cost = succ
+            child, direction, _ = succ
             path = actions + [direction]
             nodeFrontier = [x for x,_ in frontier.list]
             if ((child not in explored) and (child not in nodeFrontier)):
@@ -139,6 +139,7 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    return aStarSearch(problem)
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -151,6 +152,31 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    from searchAgents import cornersHeuristic
+    node = problem.getStartState()
+    actions = []
+
+    frontier = util.PriorityQueue()
+    frontier.push((node,actions),heuristic(node,problem))
+    explored = []
+
+    while 1:
+        if frontier.isEmpty():
+            return []
+        node, actions = frontier.pop()
+        if problem.isGoalState(node):
+            return actions
+
+        explored.append(node)
+        for succ in problem.getSuccessors(node):
+            child, direction, _ = succ
+            path = actions + [direction]
+            score = problem.getCostOfActions(path) + heuristic(child,problem)
+            nodeFrontier = [x for _, _, x in frontier.heap]
+            if (child not in explored) and (child not in nodeFrontier):
+                frontier.push((child,path),score)
+
+
     util.raiseNotDefined()
 
 def depthLimitedSearch(problem, limit):
@@ -171,7 +197,7 @@ def depthLimitedSearch(problem, limit):
             return path
         explored.append(node)
         for succ in problem.getSuccessors(node):
-            child, direction, cost = succ
+            child, direction, _ = succ
             path = actions + [direction]
             nodeFrontier = [x for x,_,_ in frontier.list]
             if ((child not in explored) and (child not in nodeFrontier)):
@@ -180,13 +206,13 @@ def depthLimitedSearch(problem, limit):
 
 def iDeepeningSearch(problem): 
     "*** YOUR CODE HERE ***"
-    for depth in range(500):
+    for depth in range(100):
         result = depthLimitedSearch(problem,depth)
         if result != []:
             return result
-    return []
+    #return []
     
-    #util.raiseNotDefined()
+    util.raiseNotDefined()
 
 def bidirectionalSearch(problem):
     "*** YOUR CODE HERE ***"
@@ -218,7 +244,7 @@ def bidirectionalSearch(problem):
         explored_ini.append(node_ini)
 
         for succ in problem.getSuccessors(node_ini):
-            child, direction, cost = succ
+            child, direction, _ = succ
             path = actions_ini + [direction]
             nodeFrontier = [x for x,_ in frontier_ini.list]
             if ((child not in explored_ini) and (child not in nodeFrontier)):
@@ -235,7 +261,7 @@ def bidirectionalSearch(problem):
         explored_fin.append(node_fin)
 
         for succ in problem.getSuccessors(node_fin):
-            child, direction, cost = succ
+            child, direction, _ = succ
             path = actions_fin + [direction]
             nodeFrontier = [x for x,_ in frontier_fin.list]
             if ((child not in explored_fin) and (child not in nodeFrontier)):
