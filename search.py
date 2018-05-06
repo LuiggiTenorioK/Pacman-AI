@@ -153,9 +153,40 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+def depthLimitedSearch(problem, limit):
+    node = problem.getStartState()
+    actions = []
+
+    frontier = util.Stack()
+    frontier.push((node,actions,0))
+    explored = []
+    
+    while 1:
+        if frontier.isEmpty():
+            return []
+        node,actions,depth = frontier.pop()
+        if depth > limit: continue
+
+        if problem.isGoalState(node):
+            return path
+        explored.append(node)
+        for succ in problem.getSuccessors(node):
+            child, direction, cost = succ
+            path = actions + [direction]
+            nodeFrontier = [x for x,_,_ in frontier.list]
+            if ((child not in explored) and (child not in nodeFrontier)):
+                frontier.push((child,path,depth+1))
+    util.raiseNotDefined()           
+
 def iDeepeningSearch(problem): 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    for depth in range(500):
+        result = depthLimitedSearch(problem,depth)
+        if result != []:
+            return result
+    return []
+    
+    #util.raiseNotDefined()
 
 def bidirectionalSearch(problem):
     "*** YOUR CODE HERE ***"
