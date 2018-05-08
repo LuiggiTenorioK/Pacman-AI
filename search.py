@@ -152,32 +152,33 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    from searchAgents import cornersHeuristic
-    node = problem.getStartState()
-    actions = []
+    cost = lambda aPath: problem.getCostOfActions([x[1] for x in aPath]) + heuristic(aPath[len(aPath) - 1][0], problem)
+    frontier = util.PriorityQueueWithFunction(cost)
 
-    frontier = util.PriorityQueue()
-    frontier.push((node,actions),heuristic(node,problem))
     explored = []
+    frontier.push([(problem.getStartState(), "Stop", 0)])
+    while not frontier.isEmpty():
+        path = frontier.pop()
 
-    while 1:
-        if frontier.isEmpty():
-            return []
-        node, actions = frontier.pop()
-        if problem.isGoalState(node):
-            return actions
+        s = path[len(path) - 1]
+        s = s[0]
 
-        explored.append(node)
-        for succ in problem.getSuccessors(node):
-            child, direction, _ = succ
-            path = actions + [direction]
-            score = problem.getCostOfActions(path) + heuristic(child,problem)
-            nodeFrontier = [x for _, _, x in frontier.heap]
-            if (child not in explored) and (child not in nodeFrontier):
-                frontier.push((child,path),score)
+        if problem.isGoalState(s):
+            return [x[1] for x in path][1:]
 
+        if s not in explored:
+            explored.append(s)
 
-    #util.raiseNotDefined()
+            for successor in problem.getSuccessors(s):
+
+                if successor[0] not in explored:
+                    successorPath = path[:]
+                    successorPath.append(successor)
+
+                    frontier.push(successorPath)
+
+    return []
+    util.raiseNotDefined()
 
 def depthLimitedSearch(problem, limit):
     node = problem.getStartState()
