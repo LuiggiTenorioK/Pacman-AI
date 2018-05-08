@@ -296,7 +296,6 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         corn = self.corners
-        corn.append(self.startingPosition)
         return (self.startingPosition, corn)
         #starting position creo que es una tupla  ej: (1,4)
         #corners es una lista de tuplas, se eliminaran cuando ya hallan sido visitadas
@@ -310,7 +309,7 @@ class CornersProblem(search.SearchProblem):
         isGoal = ((state[1] == [] ))
         #Falta imprimir el progreso
         return isGoal
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
@@ -340,7 +339,7 @@ class CornersProblem(search.SearchProblem):
                     corners.remove((nextx,nexty))
                 successors.append((((nextx,nexty),corners),action,1))
 
-        print successors
+        #print successors
 
         self._expanded += 1 # DO NOT CHANGE
         return successors

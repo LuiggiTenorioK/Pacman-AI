@@ -99,7 +99,7 @@ def depthFirstSearch(problem):
         if problem.isGoalState(node):
                 return path
         explored.append(node)
-        print "sucesores:", problem.getSuccessors(node)
+        #print "sucesores:", problem.getSuccessors(node)
         for succ in problem.getSuccessors(node):
             child, direction, _ = succ
             path = actions + [direction]
@@ -140,7 +140,7 @@ def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     return aStarSearch(problem)
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -177,7 +177,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 frontier.push((child,path),score)
 
 
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
 
 def depthLimitedSearch(problem, limit):
     node = problem.getStartState()
@@ -202,7 +202,7 @@ def depthLimitedSearch(problem, limit):
             nodeFrontier = [x for x,_,_ in frontier.list]
             if ((child not in explored) and (child not in nodeFrontier)):
                 frontier.push((child,path,depth+1))
-    util.raiseNotDefined()           
+    #util.raiseNotDefined()           
 
 def iDeepeningSearch(problem): 
     "*** YOUR CODE HERE ***"
@@ -212,7 +212,7 @@ def iDeepeningSearch(problem):
             return result
     #return []
     
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
 
 def bidirectionalSearch(problem):
     "*** YOUR CODE HERE ***"
@@ -274,7 +274,7 @@ def bidirectionalSearch(problem):
                             return action + route
                 frontier_fin.push((child,path))
 
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
 
 # Abbreviations
 bfs = breadthFirstSearch
