@@ -228,8 +228,8 @@ def bidirectionalSearch(problem):
 
     node_fin = problem.goal
     actions_fin = []
-    print "ini", node_ini
-    print "fin", node_fin
+    #print "ini", node_ini
+    #print "fin", node_fin
     if node_ini == node_fin:
         return []
 

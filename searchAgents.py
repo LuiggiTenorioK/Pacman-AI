@@ -289,7 +289,6 @@ class CornersProblem(search.SearchProblem):
         "*** YOUR CODE HERE ***"
         self.goal = (startingGameState.getPacmanPosition(), [])
         self.regresar = False;
-        self.regresar2 = False;
 
 
     def getStartState(self):
@@ -300,8 +299,6 @@ class CornersProblem(search.SearchProblem):
         "*** YOUR CODE HERE ***"
         corn = self.corners
         return (self.startingPosition, corn)
-        #starting position creo que es una tupla  ej: (1,4)
-        #corners es una lista de tuplas, se eliminaran cuando ya hallan sido visitadas
         #util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -311,15 +308,13 @@ class CornersProblem(search.SearchProblem):
         "*** YOUR CODE HERE ***"
         if(state[1] == [] and not self.regresar):
             self.regresar = True
-            print "Regresa pls"
             return False
         if(state[1] == [] and state[0] == self.startingPosition and self.regresar):
             self.regresar = False
-            print "Llegaste men"
             return True
         else:
             return False
-        #Falta imprimir el progreso
+        
         #util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -349,8 +344,6 @@ class CornersProblem(search.SearchProblem):
                 if ((nextx,nexty) in corners):
                     corners.remove((nextx,nexty))
                 successors.append((((nextx,nexty),corners),action,1))
-
-        #print successors
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -382,8 +375,6 @@ class CornersProblem(search.SearchProblem):
                 if (((nextx,nexty) in self.corners) and  (  (nextx,nexty) not in corners )  ):
                     corners.append((nextx,nexty))
                 successors.append((((nextx,nexty),corners),action,1))
-
-        #print successors
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
