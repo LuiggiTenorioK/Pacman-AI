@@ -228,8 +228,8 @@ def bidirectionalSearch(problem):
 
     node_fin = problem.goal
     actions_fin = []
-    #print "ini", node_ini
-    #print "fin", node_fin
+    print "ini", node_ini
+    print "fin", node_fin
     if node_ini == node_fin:
         return []
 
@@ -249,12 +249,13 @@ def bidirectionalSearch(problem):
         explored_ini.append(node_ini)
 
         for succ in problem.getSuccessors(node_ini):
+            #print "Ida"
             child, direction, _ = succ
             path = actions_ini + [direction]
             nodeFrontier = [x for x,_ in frontier_ini.list]
             if ((child not in explored_ini) and (child not in nodeFrontier)):
                 goalList = [x for x,_ in frontier_fin.list]
-                if (child in goalList) and (problem.isGoalState(child)):
+                if (child in goalList):
                     for node,action in frontier_fin.list:
                         if (node == child):
                             route = [Directions.REVERSE[x] for x in action]
@@ -266,13 +267,14 @@ def bidirectionalSearch(problem):
         node_fin,actions_fin = frontier_fin.pop()
         explored_fin.append(node_fin)
 
-        for succ in problem.getSuccessors(node_fin):
+        for succ in problem.getSuccessorsInversa(node_fin):
+            #print "Vuelta"
             child, direction, _ = succ
             path = actions_fin + [direction]
             nodeFrontier = [x for x,_ in frontier_fin.list]
             if ((child not in explored_fin) and (child not in nodeFrontier)):
                 startList = [x for x,_ in frontier_ini.list]
-                if (child in startList) and (problem.isGoalState(child)):
+                if (child in startList ):
                     for node,action in frontier_ini.list:
                         if (node == child):
                             route = [Directions.REVERSE[x] for x in path]
