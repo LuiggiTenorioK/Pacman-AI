@@ -97,7 +97,8 @@ def depthFirstSearch(problem):
             return []
         node,actions = frontier.pop()
         if problem.isGoalState(node):
-                return path
+            print('Search nodes in memory: %d' % len(path))
+            return path
         explored.append(node)
         #print "sucesores:", problem.getSuccessors(node)
         for succ in problem.getSuccessors(node):
@@ -132,6 +133,7 @@ def breadthFirstSearch(problem):
             nodeFrontier = [x for x,_ in frontier.list]
             if ((child not in explored) and (child not in nodeFrontier)):
                 if problem.isGoalState(child):
+                    print('Search nodes in memory: %d' % len(path))
                     return path
                 frontier.push((child,path))
     #util.raiseNotDefined()
@@ -164,6 +166,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         s = s[0]
 
         if problem.isGoalState(s):
+            print('Search nodes in memory: %d' % len([x[1] for x in path][1:]))
             return [x[1] for x in path][1:]
 
         if s not in explored:
@@ -195,6 +198,7 @@ def depthLimitedSearch(problem, limit):
         if depth > limit: continue
 
         if problem.isGoalState(node):
+            print('Search nodes in memory: %d' % len(path))
             return path
         explored.append(node)
         for succ in problem.getSuccessors(node):
@@ -255,6 +259,7 @@ def bidirectionalSearch(problem):
                         if (node == child):
                             route = [Directions.REVERSE[x] for x in action]
                             route.reverse()
+                            print('Search nodes in memory: %d' % len(path + route))
                             return path + route
                 frontier_ini.push((child,path))
 
@@ -272,6 +277,7 @@ def bidirectionalSearch(problem):
                         if (node == child):
                             route = [Directions.REVERSE[x] for x in path]
                             route.reverse()
+                            print('Search nodes in memory: %d' % len(action + route))
                             return action + route
                 frontier_fin.push((child,path))
 
