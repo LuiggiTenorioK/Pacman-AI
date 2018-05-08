@@ -564,7 +564,7 @@ class CornersGreedySearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = CornersProblem(gameState)
         #return greedySearch(problem, euclideanHeuristic)
-        return search.aStarSearch(problem,cornersHeuristic)
+        #return search.aStarSearch(problem,cornersHeuristic)
         return greedySearch(problem,cornersHeuristic) #Desplazar a search.py
 
 
@@ -590,13 +590,18 @@ def cornersHeuristic(state, problem=CornersProblem):
     heuristic = 0
     cornersLeft = state[1][:]
     referencePoint = state[0]
+    #distanceFunction = oneDimDistance
     distanceFunction = mixedDistance
 
-    while len(cornersLeft) > 0:
+    if len(cornersLeft) > 0:
         closestCorner = closestPoint(referencePoint, cornersLeft, distanceFunction)
         heuristic += distanceFunction(referencePoint, closestCorner)
-        referencePoint = closestCorner
-        cornersLeft.remove(closestCorner)
+    #while len(cornersLeft) > 0:
+    #    closestCorner = closestPoint(referencePoint, cornersLeft, distanceFunction)
+    #    heuristic += distanceFunction(referencePoint, closestCorner)
+    #    #return heuristic
+    #    referencePoint = closestCorner
+    #    cornersLeft.remove(closestCorner)
 
     return heuristic
 
@@ -617,6 +622,9 @@ def closestPoint(fromPoint, candidatesList,distanceFunction):
 
 def manhatanDistance(pointA, pointB):
     return abs(pointA[0] - pointB[0]) + abs(pointA[1] - pointB[1])
+
+def oneDimDistance(pointA, pointB):
+    return max( abs(pointA[0] - pointB[0]) , abs(pointA[1] - pointB[1]))
 
 def euclidieanDistance(pointA,pointB):
     return ( (pointA[0] - pointB[0]) ** 2 + (pointA[1] - pointB[1]) ** 2 ) ** 0.5
