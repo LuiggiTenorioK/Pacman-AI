@@ -211,7 +211,7 @@ def depthLimitedSearch(problem, limit):
 
 def iDeepeningSearch(problem): 
     "*** YOUR CODE HERE ***"
-    for depth in range(100):
+    for depth in range(500):
         result = depthLimitedSearch(problem,depth)
         if result != []:
             return result

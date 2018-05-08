@@ -288,6 +288,8 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         self.goal = ((right,top), self.corners)
+        self.regresar = False;
+
 
     def getStartState(self):
         """
@@ -306,9 +308,17 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        isGoal = ((state[1] == [] ))
+        if(state[1] == [] and not self.regresar):
+            self.regresar = True
+            print "Regresa pls"
+            return False
+        if(state[1] == [] and state[0] == self.startingPosition and self.regresar):
+            self.regresar = False
+            print "Llegaste men"
+            return True
+        else:
+            return False
         #Falta imprimir el progreso
-        return isGoal
         #util.raiseNotDefined()
 
     def getSuccessors(self, state):

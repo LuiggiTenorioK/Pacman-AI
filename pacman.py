@@ -371,12 +371,12 @@ class PacmanRules:
                 state.data._win = True
         #print "Antes: "
         #print state.data._win
-        '''(startX,startY) = state.data.layout.agentPositions[0][1]
+        (startX,startY) = state.data.layout.agentPositions[0][1]
         if state.data._win and ((x,y)!=(startX,startY)):
             state.data.food[startX][startY] = True
             state.data._win = False
             state.data.layout.capsules.append((startX,startY))
-            print "Regresa pls"'''
+            print "Regresa pls"
 
 
         # Eat capsule
