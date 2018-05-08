@@ -558,6 +558,8 @@ class CornersGreedySearchAgent(SearchAgent):
         print 'Path found with cost %d.' % len(self.actions)
 
 
+
+
     def findPathToClosestCorner(self, gameState):
         startPosition = gameState.getPacmanPosition()
         food = gameState.getFood()
@@ -565,6 +567,7 @@ class CornersGreedySearchAgent(SearchAgent):
         problem = CornersProblem(gameState)
         #return greedySearch(problem, euclideanHeuristic)
         #return search.aStarSearch(problem,cornersHeuristic)
+
         return greedySearch(problem,cornersHeuristic) #Desplazar a search.py
 
 
@@ -593,15 +596,15 @@ def cornersHeuristic(state, problem=CornersProblem):
     #distanceFunction = oneDimDistance
     distanceFunction = mixedDistance
 
-    if len(cornersLeft) > 0:
-        closestCorner = closestPoint(referencePoint, cornersLeft, distanceFunction)
-        heuristic += distanceFunction(referencePoint, closestCorner)
-    #while len(cornersLeft) > 0:
+    #if len(cornersLeft) > 0:
     #    closestCorner = closestPoint(referencePoint, cornersLeft, distanceFunction)
     #    heuristic += distanceFunction(referencePoint, closestCorner)
-    #    #return heuristic
-    #    referencePoint = closestCorner
-    #    cornersLeft.remove(closestCorner)
+    while len(cornersLeft) > 0:
+        closestCorner = closestPoint(referencePoint, cornersLeft, distanceFunction)
+        heuristic += distanceFunction(referencePoint, closestCorner)
+        #return heuristic
+        referencePoint = closestCorner
+        cornersLeft.remove(closestCorner)
 
     return heuristic
 
