@@ -72,6 +72,23 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def graphSearch(problem, frontier):
+    explored = []
+    frontier.push((problem.getStartState(),[]))
+
+    while 1:
+        if frontier.isEmpty():
+            return []
+        node, actions = frontier.pop()
+        explored.append(node)
+        for successor in problem.getSuccessors(node):
+            path = actions + [successor[1]]
+            if (successor[0] not in explored) and (successor not in [x for x,_ in frontier.list]):
+                if problem.isGoalState(successor[0]):
+                    print('Search nodes in memory: %d' % len(path))
+                    return path
+                frontier.push((successor[0], path))
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -87,55 +104,17 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    node = problem.getStartState()
-    actions = []
     frontier = util.Stack()
-    frontier.push((node,actions))
-    explored = []
-    while 1:
-        if frontier.isEmpty():
-            return []
-        node,actions = frontier.pop()
-        if problem.isGoalState(node):
-            print('Search nodes in memory: %d' % len(path))
-            return path
-        explored.append(node)
-        #print "sucesores:", problem.getSuccessors(node)
-        for succ in problem.getSuccessors(node):
-            child, direction, _ = succ
-            path = actions + [direction]
-            nodeFrontier = [x for x,_ in frontier.list]
-            if ((child not in explored) and (child not in nodeFrontier)):
-                frontier.push((child,path))       
+    return graphSearch(problem, frontier)
     #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    node = problem.getStartState()
-    actions = []
-
-    if problem.isGoalState(node):
-        return actions
-
+    if problem.isGoalState(problem.getStartState()):
+        return []
     frontier = util.Queue()
-    frontier.push((node,actions))
-    explored = []
-    while 1:
-        if frontier.isEmpty():
-            return []
-        node,actions = frontier.pop()
-        explored.append(node)
-
-        for succ in problem.getSuccessors(node):
-            child, direction, _ = succ
-            path = actions + [direction]
-            nodeFrontier = [x for x,_ in frontier.list]
-            if ((child not in explored) and (child not in nodeFrontier)):
-                if problem.isGoalState(child):
-                    print('Search nodes in memory: %d' % len(path))
-                    return path
-                frontier.push((child,path))
+    return graphSearch(problem, frontier)
     #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
@@ -181,14 +160,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     frontier.push(successorPath)
 
     return []
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
 
 def depthLimitedSearch(problem, limit):
-    node = problem.getStartState()
-    actions = []
-
     frontier = util.Stack()
-    frontier.push((node,actions,0))
+    frontier.push((problem.getStartState(),[],0))
     explored = []
     
     while 1:
@@ -196,17 +172,14 @@ def depthLimitedSearch(problem, limit):
             return []
         node,actions,depth = frontier.pop()
         if depth > limit: continue
-
-        if problem.isGoalState(node):
-            print('Search nodes in memory: %d' % len(path))
-            return path
         explored.append(node)
-        for succ in problem.getSuccessors(node):
-            child, direction, _ = succ
-            path = actions + [direction]
-            nodeFrontier = [x for x,_,_ in frontier.list]
-            if ((child not in explored) and (child not in nodeFrontier)):
-                frontier.push((child,path,depth+1))
+        for successor in problem.getSuccessors(node):
+            path = actions + [successor[1]]
+            if ((successor[0] not in explored) and (successor[0] not in [x for x,_,_ in frontier.list])):
+                if problem.isGoalState(successor[0]):
+                    print('Search nodes in memory: %d' % len(path))
+                    return path
+                frontier.push((successor[0],path,depth+1))
     #util.raiseNotDefined()           
 
 def iDeepeningSearch(problem): 
@@ -215,7 +188,7 @@ def iDeepeningSearch(problem):
         result = depthLimitedSearch(problem,depth)
         if result != []:
             return result
-    #return []
+    return []
     
     #util.raiseNotDefined()
 
@@ -224,21 +197,18 @@ def bidirectionalSearch(problem):
     from game import Directions
 
     node_ini = problem.getStartState()
-    actions_ini = []
-
     node_fin = problem.goal
-    actions_fin = []
-    #print "ini", node_ini
-    #print "fin", node_fin
     if node_ini == node_fin:
         return []
 
+    #Start: Start 
     frontier_ini = util.Queue()
-    frontier_ini.push((node_ini,actions_ini))
+    frontier_ini.push((node_ini,[]))
     explored_ini = []
 
+    #Start: Goal
     frontier_fin = util.Queue()
-    frontier_fin.push((node_fin,actions_fin))
+    frontier_fin.push((node_fin,[]))
     explored_fin = []
 
 
@@ -248,40 +218,34 @@ def bidirectionalSearch(problem):
         node_ini,actions_ini = frontier_ini.pop()
         explored_ini.append(node_ini)
 
-        for succ in problem.getSuccessors(node_ini):
-            #print "Ida"
-            child, direction, _ = succ
-            path = actions_ini + [direction]
-            nodeFrontier = [x for x,_ in frontier_ini.list]
-            if ((child not in explored_ini) and (child not in nodeFrontier)):
-                goalList = [x for x,_ in frontier_fin.list]
-                if (child in goalList):
+        for successor in problem.getSuccessors(node_ini):
+            path = actions_ini + [successor[1]]
+            if ((successor[0] not in explored_ini) and (successor[0] not in [x for x,_ in frontier_ini.list])):
+                #Verify if child is already visited in goal path
+                if (successor[0] in [x for x,_ in frontier_fin.list]):
                     for node,action in frontier_fin.list:
-                        if (node == child):
+                        if (node == successor[0]):
                             route = [Directions.REVERSE[x] for x in action]
                             route.reverse()
                             print('Search nodes in memory: %d' % len(path + route))
                             return path + route
-                frontier_ini.push((child,path))
+                frontier_ini.push((successor[0],path))
 
         node_fin,actions_fin = frontier_fin.pop()
         explored_fin.append(node_fin)
 
-        for succ in problem.getSuccessorsInversa(node_fin):
-            #print "Vuelta"
-            child, direction, _ = succ
-            path = actions_fin + [direction]
-            nodeFrontier = [x for x,_ in frontier_fin.list]
-            if ((child not in explored_fin) and (child not in nodeFrontier)):
-                startList = [x for x,_ in frontier_ini.list]
-                if (child in startList ):
+        for successor in problem.getSuccessorsReverse(node_fin):
+            path = actions_fin + [successor[1]]
+            if ((successor[0] not in explored_fin) and (successor[0] not in [x for x,_ in frontier_fin.list])):
+                #Verify if child is already visited in start path
+                if (successor[0] in [x for x,_ in frontier_ini.list]):
                     for node,action in frontier_ini.list:
-                        if (node == child):
+                        if (node == successor[0]):
                             route = [Directions.REVERSE[x] for x in path]
                             route.reverse()
                             print('Search nodes in memory: %d' % len(action + route))
                             return action + route
-                frontier_fin.push((child,path))
+                frontier_fin.push((successor[0],path))
 
     #util.raiseNotDefined()
 

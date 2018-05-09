@@ -348,7 +348,7 @@ class CornersProblem(search.SearchProblem):
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
-    def getSuccessorsInversa(self, state):
+    def getSuccessorsReverse(self, state):
         """
         Returns successor states, the actions they require, and a cost of 1.
          As noted in search.py:
