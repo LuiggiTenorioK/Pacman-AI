@@ -113,8 +113,24 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     if problem.isGoalState(problem.getStartState()):
         return []
+
     frontier = util.Queue()
-    return graphSearch(problem, frontier)
+    frontier.push((problem.getStartState(),[]))
+    explored = []
+
+    while 1:
+        if frontier.isEmpty():
+            return []
+        node,actions = frontier.pop()
+        explored.append(node)
+
+        for successor in problem.getSuccessors(node):
+            path = actions + [successor[1]]
+            if ((successor[0] not in explored) and (successor[0] not in [x for x,_ in frontier.list])):
+                if problem.isGoalState(successor[0]):
+                    return path
+                frontier.push((successor[0],path))
+
     #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
