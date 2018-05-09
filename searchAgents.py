@@ -658,17 +658,17 @@ def closestPoint(fromPoint, candidatesList,distanceFunction):
 
     return closestCorner
 
-def manhatanDistance(pointA, pointB):
+def manhattanDistance(pointA, pointB):
     return abs(pointA[0] - pointB[0]) + abs(pointA[1] - pointB[1])
 
-def oneDimDistance(pointA, pointB):
+def chebyshevDistance(pointA, pointB):
     return max( abs(pointA[0] - pointB[0]) , abs(pointA[1] - pointB[1]))
 
 def euclidieanDistance(pointA,pointB):
     return ( (pointA[0] - pointB[0]) ** 2 + (pointA[1] - pointB[1]) ** 2 ) ** 0.5
 
 def mixedDistance(pointA, pointB):
-    return max(manhatanDistance(pointA, pointB),euclidieanDistance(pointA,pointB))
+    return max(manhattanDistance(pointA, pointB),euclidieanDistance(pointA,pointB))
 
 
 def greedySearch(problem,heuristic=search.nullHeuristic):
@@ -695,6 +695,7 @@ def greedySearch(problem,heuristic=search.nullHeuristic):
             for successor in problem.getSuccessors(s):
 
                 if successor[0] not in explored:
+
                     successorPath = path[:]
                     successorPath.append(successor)
 

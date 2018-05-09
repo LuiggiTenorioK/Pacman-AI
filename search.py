@@ -159,6 +159,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     explored = []
     frontier.push([(problem.getStartState(), "Stop", 0)])
+
+    incon=0
+
     while not frontier.isEmpty():
         path = frontier.pop()
 
@@ -167,6 +170,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
         if problem.isGoalState(s):
             print('Search nodes in memory: %d' % len([x[1] for x in path][1:]))
+            print('Nro de inconsistencias: ' + str(incon))
             return [x[1] for x in path][1:]
 
         if s not in explored:
@@ -180,6 +184,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
                     frontier.push(successorPath)
 
+                    if (heuristic(path[-1][0], problem) > problem.getCostOfActions(
+                            [x[1] for x in successorPath]) + heuristic(successorPath[-1][0], problem)):
+                        print(heuristic(path[-1][0], problem),
+                              problem.getCostOfActions([x[1] for x in successorPath]) + heuristic(successorPath[-1][0],
+                                                                                                  problem))
+                        incon+=1
+
+    print('Nro de inconsistencias: ' + str(incon))
     return []
     util.raiseNotDefined()
 
