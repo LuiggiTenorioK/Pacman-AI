@@ -85,7 +85,7 @@ def graphSearch(problem, frontier):
             path = actions + [successor[1]]
             if (successor[0] not in explored) and (successor not in [x for x,_ in frontier.list]):
                 if problem.isGoalState(successor[0]):
-                    print('Search nodes in memory: %d' % len(path))
+                    print('Search nodes in memory: %d' % len(frontier.list))
                     return path
                 frontier.push((successor[0], path))
 
@@ -128,6 +128,7 @@ def breadthFirstSearch(problem):
             path = actions + [successor[1]]
             if ((successor[0] not in explored) and (successor[0] not in [x for x,_ in frontier.list])):
                 if problem.isGoalState(successor[0]):
+                    print('Search nodes in memory: %d' % len(frontier.list))
                     return path
                 frontier.push((successor[0],path))
 
@@ -164,7 +165,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         s = s[0]
 
         if problem.isGoalState(s):
-            print('Search nodes in memory: %d' % len([x[1] for x in path][1:]))
+            print('Search nodes in memory: %d' % len(frontier.heap)) #[x[1] for x in path][1:]
             print('Nro de inconsistencias: ' + str(incon))
             return [x[1] for x in path][1:]
 
@@ -205,7 +206,7 @@ def depthLimitedSearch(problem, limit):
             path = actions + [successor[1]]
             if ((successor[0] not in explored) and (successor[0] not in [x for x,_,_ in frontier.list])):
                 if problem.isGoalState(successor[0]):
-                    print('Search nodes in memory: %d' % len(path))
+                    print('Search nodes in memory: %d' % len(frontier.list))
                     return path
                 frontier.push((successor[0],path,depth+1))
     #util.raiseNotDefined()           
@@ -255,7 +256,7 @@ def bidirectionalSearch(problem):
                         if (node == successor[0]):
                             route = [Directions.REVERSE[x] for x in action]
                             route.reverse()
-                            print('Search nodes in memory: %d' % len(path + route))
+                            print('Search nodes in memory: %d' % len(frontier_ini.list + frontier_fin.list)) #path + route
                             return path + route
                 frontier_ini.push((successor[0],path))
 
@@ -271,7 +272,7 @@ def bidirectionalSearch(problem):
                         if (node == successor[0]):
                             route = [Directions.REVERSE[x] for x in path]
                             route.reverse()
-                            print('Search nodes in memory: %d' % len(action + route))
+                            print('Search nodes in memory: %d' % len(frontier_ini.list + frontier_fin.list)) #action + route
                             return action + route
                 frontier_fin.push((successor[0],path))
 
