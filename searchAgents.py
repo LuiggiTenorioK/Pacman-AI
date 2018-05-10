@@ -73,7 +73,7 @@ class SearchAgent(Agent):
     Note: You should NOT change any code in SearchAgent
     """
 
-    def __init__(self, fn='depthFirstSearch', prob='PositionSearchProblem', heuristic='nullHeuristic'):
+    def __init__(self, fn='greedySearch', prob='CornersProblem', heuristic='cornersHeuristic'):
         # Warning: some advanced Python magic is employed below to find the right functions and problems
 
         # Get the search function from the name and heuristic
@@ -318,23 +318,8 @@ class CornersProblem(search.SearchProblem):
         #util.raiseNotDefined()
 
     def getSuccessors(self, state):
-        """
-        Returns successor states, the actions they require, and a cost of 1.
-         As noted in search.py:
-            For a given state, this should return a list of triples, (successor,
-            action, stepCost), where 'successor' is a successor to the current
-            state, 'action' is the action required to get there, and 'stepCost'
-            is the incremental cost of expanding to that successor
-        """
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-            "*** YOUR CODE HERE ***"
             x,y = state[0]
             corners = state[1][:]
             dx,dy = Actions.directionToVector(action)
@@ -344,28 +329,12 @@ class CornersProblem(search.SearchProblem):
                 if ((nextx,nexty) in corners):
                     corners.remove((nextx,nexty))
                 successors.append((((nextx,nexty),corners),action,1))
-
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
-    def getSuccessorsReverse(self, state):
-        """
-        Returns successor states, the actions they require, and a cost of 1.
-         As noted in search.py:
-            For a given state, this should return a list of triples, (successor,
-            action, stepCost), where 'successor' is a successor to the current
-            state, 'action' is the action required to get there, and 'stepCost'
-            is the incremental cost of expanding to that successor
-        """
+    def getSuccessorsInversa(self, state):
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-            "*** YOUR CODE HERE ***"
             x,y = state[0]
             corners = state[1][:]
             dx,dy = Actions.directionToVector(action)
@@ -375,8 +344,7 @@ class CornersProblem(search.SearchProblem):
                 if (((nextx,nexty) in self.corners) and  (  (nextx,nexty) not in corners )  ):
                     corners.append((nextx,nexty))
                 successors.append((((nextx,nexty),corners),action,1))
-
-        self._expanded += 1 # DO NOT CHANGE
+        self._expanded += 1
         return successors
 
     def getCostOfActions(self, actions):
@@ -603,7 +571,7 @@ class CornersGreedySearchAgent(SearchAgent):
         #return greedySearch(problem, euclideanHeuristic)
         #return search.aStarSearch(problem,cornersHeuristic)
 
-        return greedySearch(problem,cornersHeuristic) #Desplazar a search.py
+        return search.greedySearch(problem,cornersHeuristic) #Desplazar a search.py
 
 
     #util.raiseNotDefined()
@@ -658,50 +626,19 @@ def closestPoint(fromPoint, candidatesList,distanceFunction):
 
     return closestCorner
 
-def manhattanDistance(pointA, pointB):
+def manhatanDistance(pointA, pointB):
     return abs(pointA[0] - pointB[0]) + abs(pointA[1] - pointB[1])
 
-def chebyshevDistance(pointA, pointB):
+def oneDimDistance(pointA, pointB):
     return max( abs(pointA[0] - pointB[0]) , abs(pointA[1] - pointB[1]))
 
 def euclidieanDistance(pointA,pointB):
     return ( (pointA[0] - pointB[0]) ** 2 + (pointA[1] - pointB[1]) ** 2 ) ** 0.5
 
 def mixedDistance(pointA, pointB):
-    return max(manhattanDistance(pointA, pointB),euclidieanDistance(pointA,pointB))
+    return max(manhatanDistance(pointA, pointB),euclidieanDistance(pointA,pointB))
 
 
-def greedySearch(problem,heuristic=search.nullHeuristic):
-    """Busqueda para la parte 3 del trabajo"""
-    #cost = lambda aPath: problem.getCostOfActions([x[1] for x in aPath]) + heuristic(aPath[len(aPath) - 1][0], problem)
-    cost = lambda greedyPath: heuristic(greedyPath[-1][0], problem)
-    frontier = util.PriorityQueueWithFunction(cost)
 
-    explored = []
-    frontier.push([(problem.getStartState(), "Stop", 0)])
-
-    while not frontier.isEmpty():
-        path = frontier.pop()
-
-        s = path[len(path) - 1]
-        s = s[0]
-
-        if problem.isGoalState(s):
-            return [x[1] for x in path][1:]
-
-        if s not in explored:
-            explored.append(s)
-
-            for successor in problem.getSuccessors(s):
-
-                if successor[0] not in explored:
-
-                    successorPath = path[:]
-                    successorPath.append(successor)
-
-                    frontier.push(successorPath)
-
-    return []
-    util.raiseNotDefined()
 
 #-l tinyCorners -p CornersGreedySearchAgent -a prob=CornersProblem

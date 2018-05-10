@@ -263,7 +263,7 @@ def bidirectionalSearch(problem):
         node_fin,actions_fin = frontier_fin.pop()
         explored_fin.append(node_fin)
 
-        for successor in problem.getSuccessorsReverse(node_fin):
+        for successor in problem.getSuccessorsInversa(node_fin):
             path = actions_fin + [successor[1]]
             if ((successor[0] not in explored_fin) and (successor[0] not in [x for x,_ in frontier_fin.list])):
                 #Verify if child is already visited in start path
@@ -277,7 +277,38 @@ def bidirectionalSearch(problem):
                 frontier_fin.push((successor[0],path))
 
     #util.raiseNotDefined()
+def greedySearch(problem,heuristic=nullHeuristic):
+    """Busqueda para la parte 3 del trabajo"""
+    #cost = lambda aPath: problem.getCostOfActions([x[1] for x in aPath]) + heuristic(aPath[len(aPath) - 1][0], problem)
+    cost = lambda greedyPath: heuristic(greedyPath[-1][0], problem)
+    frontier = util.PriorityQueueWithFunction(cost)
 
+    explored = []
+    frontier.push([(problem.getStartState(), "Stop", 0)])
+
+    while not frontier.isEmpty():
+        path = frontier.pop()
+
+        s = path[len(path) - 1]
+        s = s[0]
+
+        if problem.isGoalState(s):
+            print('Nodos Expandidos: ' + str(problem._expanded ) )
+            return [x[1] for x in path][1:]
+
+        if s not in explored:
+            explored.append(s)
+
+            for successor in problem.getSuccessors(s):
+
+                if successor[0] not in explored:
+                    successorPath = path[:]
+                    successorPath.append(successor)
+
+                    frontier.push(successorPath)
+
+    return []
+    util.raiseNotDefined()
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
